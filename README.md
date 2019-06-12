@@ -1,6 +1,6 @@
-# Ignore 
+# Ignore
 
-Starting point for a git extension that can help manage `.gitignore` files.
+Starting point for a Git extension that can help manage `.gitignore` files.
 
 Current feature level: _"Able to detect if CWD has a `.git` folder"_.
 
