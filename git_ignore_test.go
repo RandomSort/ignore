@@ -9,21 +9,36 @@ import (
 
 func TestGitDir(t *testing.T) {
 	testDir, err := ioutil.TempDir("", "GitDir")
+	defer os.RemoveAll(testDir)
 	if err != nil {
 		t.Errorf("Was unable to get workdir(%v). Should never fail. Got error: %v", testDir, err)
 	}
-	defer os.RemoveAll(testDir)
+
 	if isGitDir(testDir) {
 		t.Errorf("testDir shouldn't be a Git repo, but seems not to be")
 	}
 }
 
-func TestNoGitDir(t *testing.T) {
-	testDir, err := ioutil.TempDir("", "NoGitDir")
+func TestParentGitDit(t *testing.T) {
+	testDir, err := ioutil.TempDir("", "GitDir")
+	defer os.RemoveAll(testDir)
 	if err != nil {
 		t.Errorf("Was unable to get workdir(%v). Should never fail. Got error: %v", testDir, err)
 	}
+	err = os.Mkdir(filepath.Join(testDir, "subdir"), 644)
+	err = os.Mkdir(filepath.Join(testDir, ".git"), 644)
+	if !isGitDir(filepath.Join(testDir, "subdir")) {
+		t.Errorf("Expected to find .gitdir in parent folder of: %v", filepath.Join(testDir, "subdir"))
+	}
+}
+
+func TestNoGitDir(t *testing.T) {
+	testDir, err := ioutil.TempDir("", "NoGitDir")
 	defer os.RemoveAll(testDir)
+	if err != nil {
+		t.Errorf("Was unable to get workdir(%v). Should never fail. Got error: %v", testDir, err)
+	}
+
 	err = os.Mkdir(filepath.Join(testDir, ".git"), 644)
 	if !isGitDir(testDir) {
 		t.Errorf("testDir should be a Git repo, but seems not to be")

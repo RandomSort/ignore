@@ -21,9 +21,12 @@ func main() {
 }
 
 func isGitDir(path string) bool {
-	if _, err := os.Stat(filepath.Join(path, ".git")); os.IsNotExist(err) {
-		return false
-	} else {
-		return true
+	for curDir := path; curDir != filepath.Dir(curDir); curDir = filepath.Dir(curDir) {
+		_, err := os.Stat(filepath.Join(curDir, ".git"))
+		if err == nil {
+			return true
+		}
 	}
+
+	return false
 }
