@@ -11,10 +11,19 @@ func main() {
 	if err != nil {
 		return
 	}
-	if _, err := os.Stat(filepath.Join(dir, ".git")); os.IsNotExist(err) {
+
+	if isGitDir(dir) {
 		fmt.Println("This is not a git repository")
 	} else {
 		fmt.Println("This is a Git repository!")
 	}
 
+}
+
+func isGitDir(path string) bool {
+	if _, err := os.Stat(filepath.Join(path, ".git")); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
 }
