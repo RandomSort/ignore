@@ -4,7 +4,7 @@
 
 Starting point for a Git extension that can help manage `.gitignore` files.
 
-Current feature level: _"Able to detect if CWD has a `.git` folder"_.
+Current feature level: _"Able to detect if CWD or any parent directory has a `.git` folder"_.
 
 ## Developing
 
