@@ -12,9 +12,9 @@ func main() {
 	if err != nil {
 		return
 	}
-	_, err = getGitDir(dir)
+	gitDir, err := getGitDir(dir)
 	if err != nil {
-		fmt.Println("This is not a git repository")
+		fmt.Printf("Git dir is located in: %s\n", gitDir)
 	} else {
 		fmt.Println("This is a Git repository!")
 	}
