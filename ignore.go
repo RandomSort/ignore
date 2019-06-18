@@ -31,3 +31,14 @@ func getGitDir(path string) (string, error) {
 
 	return "", errors.New("No Git directory found")
 }
+
+func ignorePath(ignoreFile string, path string) error {
+	f, err := os.OpenFile(ignoreFile, os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	fmt.Fprintln(f, path)
+	return nil
+}

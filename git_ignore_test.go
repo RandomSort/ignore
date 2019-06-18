@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -50,5 +51,25 @@ func TestCWDGitDir(t *testing.T) {
 	}
 	if gitDir != testDir {
 		t.Errorf("Expected %v, got %v", testDir, gitDir)
+	}
+}
+
+func TestAppendPath(t *testing.T) {
+	testDir, err := ioutil.TempDir("", "AppendPath")
+	t.Log(testDir)
+	if err != nil {
+		t.Errorf("Was unable to get workdir(%v). Should never fail. Got Error: %v", testDir, err)
+	}
+	defer os.RemoveAll(testDir)
+	f, err := os.OpenFile(filepath.Join(testDir, ".gitignore"), os.O_APPEND|os.O_CREATE, 0644)
+	fmt.Fprintln(f, "ignoredfile")
+	expectedFile, _ := os.OpenFile(filepath.Join(testDir, "expectedfile"), os.O_APPEND|os.O_CREATE, 0664)
+	fmt.Fprintln(expectedFile, "ignoredfile")
+	fmt.Fprintln(expectedFile, "filename.go")
+	ignorePath(filepath.Join(testDir, ".gitignore"), "filename.go")
+	expected, _ := ioutil.ReadFile(filepath.Join(testDir, "expectedfile"))
+	dat, err := ioutil.ReadFile(filepath.Join(testDir, ".gitignore"))
+	if fmt.Sprintf("%s", dat) != fmt.Sprintf("%s", expected) {
+		t.Errorf("Expected: %s got %s", expected, dat)
 	}
 }
