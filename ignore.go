@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,8 +12,8 @@ func main() {
 	if err != nil {
 		return
 	}
-
-	if isGitDir(dir) {
+	_, err = getGitDir(dir)
+	if err != nil {
 		fmt.Println("This is not a git repository")
 	} else {
 		fmt.Println("This is a Git repository!")
@@ -20,13 +21,13 @@ func main() {
 
 }
 
-func isGitDir(path string) bool {
+func getGitDir(path string) (string, error) {
 	for curDir := path; curDir != filepath.Dir(curDir); curDir = filepath.Dir(curDir) {
 		_, err := os.Stat(filepath.Join(curDir, ".git"))
 		if err == nil {
-			return true
+			return curDir, nil
 		}
 	}
 
-	return false
+	return "", errors.New("No Git directory found")
 }
