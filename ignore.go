@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,11 +15,16 @@ func main() {
 	}
 	gitDir, err := getGitDir(dir)
 	if err != nil {
-		fmt.Printf("Git dir is located in: %s\n", gitDir)
-	} else {
-		fmt.Println("This is a Git repository!")
+		fmt.Println("This is not a Git repository")
+		return
 	}
-
+	flag.Parse()
+	pathToIgnore := flag.Arg(0)
+	if pathToIgnore == "" {
+		return
+	}
+	ignoreFile := filepath.Join(gitDir, ".gitignore")
+	ignorePath(ignoreFile, pathToIgnore)
 }
 
 func getGitDir(path string) (string, error) {
