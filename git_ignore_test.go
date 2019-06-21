@@ -65,6 +65,28 @@ func TestAppendPath(t *testing.T) {
 	}
 }
 
+func TestLoadLines(t *testing.T) {
+	testDir := getTestDir(t)
+	defer os.RemoveAll(testDir)
+
+	ignoreFilePath := filepath.Join(testDir, ".gitignore")
+	f, _ := os.OpenFile(ignoreFilePath, os.O_APPEND|os.O_CREATE, 0644)
+	expected := []string{"1", "2", "3"}
+	for _, v := range expected {
+		fmt.Fprintln(f, v)
+	}
+	iFile := new(ignoreFile)
+	iFile.path = ignoreFilePath
+	iFile.LoadLines()
+	for i := range iFile.lines {
+		if iFile.lines[i] != expected[i] {
+			t.Errorf("Expected %s, found %s", expected[i], iFile.lines[i])
+		}
+
+	}
+
+}
+
 func getTestDir(t *testing.T) string {
 	testDir, err := ioutil.TempDir("", "AppendPath")
 	if err != nil {
