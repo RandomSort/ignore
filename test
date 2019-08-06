@@ -1,0 +1,5 @@
+@test "Running without args doesn't crash" {
+  run code/ignore
+  [ "$status" -eq 0 ]
+
+}
