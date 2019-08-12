@@ -1,6 +1,6 @@
 
 @test "Running without args doesn't crash" {
-  run /builds/RandomSort/ignore/ignore
+  run $BATS_TEST_DIRNAME/ignore
   echo $output
   [ "$status" -eq 0 ]
   

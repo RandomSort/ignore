@@ -33,7 +33,6 @@ functional_test:
     name: "randomsort/gobats:latest"
     entrypoint: [""]
   script:
-    - ls /
     - bats test
     
   
