@@ -22,15 +22,14 @@ func main() {
 	}
 	flag.Parse()
 	pathToIgnore := flag.Arg(0)
+	fmt.Println(pathToIgnore)
 	if pathToIgnore == "" {
 		return
 	}
 	iFile := filepath.Join(gitDir, ".gitignore")
 	ignorePath(iFile, pathToIgnore)
-	iFileObj := new(ignoreFile)
-	iFileObj.path = iFile
-	iFileObj.LoadLines()
-	iFileObj.PrintLines()
+
+
 
 }
 
@@ -46,13 +45,16 @@ func getGitDir(path string) (string, error) {
 }
 
 func ignorePath(ignoreFile string, path string) error {
-	f, err := os.OpenFile(ignoreFile, os.O_APPEND|os.O_CREATE, 0644)
+	f, err := os.OpenFile(ignoreFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	fmt.Fprintln(f, path)
+	_, err = fmt.Fprintln(f, path)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
