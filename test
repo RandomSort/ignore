@@ -1,6 +1,6 @@
 
 @test "Running without args doesn't crash" {
-  run $CI_PROJECT_DIR/ignore
+  run $BATS_TEST_DIRNAME/ignore
   echo $output
   [ "$status" -eq 0 ]
   
