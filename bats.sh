@@ -1,2 +1,2 @@
 go build
-docker run -v $(pwd):/code bats/bats:latest /code/test
+docker run -v $(pwd):/code randomsort/gobats:latest /code/test

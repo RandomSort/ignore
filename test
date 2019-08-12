@@ -1,8 +1,53 @@
+GIT_DIR=$BATS_TMPDIR/repo
+function create_git_dir {
+  git init $GIT_DIR  
+}
+
+setup() {
+  create_git_dir
+}
+
+teardown() {
+  rm -rf $GIT_DIR
+}
 
 @test "Running without args doesn't crash" {
   run $BATS_TEST_DIRNAME/ignore
   echo $output
   [ "$status" -eq 0 ]
-  
 }
+
+@test "Running without args and existing .gitignore file does not change .gitignore" {
+  echo "this_is_path" > $GIT_DIR/.gitignore
+  cd $GIT_DIR
+  $BATS_TEST_DIRNAME/ignore
+  run cat $GIT_DIR/.gitignore
+  [ $output = "this_is_path" ]
+}
+
+@test "Running without args, and no existing .gitignore file does not create .gitignore" {
+  cd $GIT_DIR
+  $BATS_TEST_DIRNAME/ignore
+  [ ! -f "$GIT_DIR/.gitignore" ]
+}
+
+@test "Running with a path, and no existing .gitignore file creates .gitignore" {
+  cd $GIT_DIR
+  $BATS_TEST_DIRNAME/ignore this_is_path
+  run cat $GIT_DIR/.gitignore
+  [ $output = "this_is_path" ]
+}
+
+@test "Running with a path, and existing .gitignore appends path" {
+  cd $GIT_DIR
+  echo "this_is_path" > .gitignore
+  run $BATS_TEST_DIRNAME/ignore this_is_also_path
+  [ $status -eq 0 ]
+  run cat $GIT_DIR/.gitignore
+  [ "${lines[0]}" = "this_is_path" ]
+  [ "${lines[1]}" = "this_is_also_path" ]
+}
+
+
+
 

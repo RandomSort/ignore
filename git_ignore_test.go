@@ -52,14 +52,33 @@ func TestAppendPath(t *testing.T) {
 	defer os.RemoveAll(testDir)
 
 	ignoreFilePath := filepath.Join(testDir, ".gitignore")
-	f, _ := os.OpenFile(ignoreFilePath, os.O_APPEND|os.O_CREATE, 0644)
-	fmt.Fprintln(f, "ignoredfile")
-	expectedFile, _ := os.OpenFile(filepath.Join(testDir, "expectedfile"), os.O_APPEND|os.O_CREATE, 0664)
+	f, err := os.OpenFile(ignoreFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if ( err != nil ){
+		t.Errorf("Couldn't open ignoreFile at path %s", ignoreFilePath)
+	}
+	_, err = fmt.Fprintln(f, "ignoredfile")
+	if(err != nil) {
+		t.Errorf("Couldn't write to path %s caused by %s", ignoreFilePath, err)
+	}
+	expectedFilePath := filepath.Join(testDir, "expectedfile")
+	expectedFile, err := os.OpenFile(expectedFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0664)
+	if (err != nil ) {
+		t.Errorf("Couldn't open expected file at path %s", expectedFilePath)
+	}
 	fmt.Fprintln(expectedFile, "ignoredfile")
 	fmt.Fprintln(expectedFile, "filename.go")
-	ignorePath(ignoreFilePath, "filename.go")
-	expected, _ := ioutil.ReadFile(filepath.Join(testDir, "expectedfile"))
-	dat, _ := ioutil.ReadFile(ignoreFilePath)
+	err = ignorePath(ignoreFilePath, "filename.go")
+	if (err != nil) {
+		t.Errorf("Couldn't ignore path caused by %s", err)
+	}
+	expected, err := ioutil.ReadFile(expectedFilePath)
+	if (err != nil) {
+		t.Errorf("Couldn't readfile at path %s", expectedFilePath)
+	}
+	dat, err := ioutil.ReadFile(ignoreFilePath)
+	if (err != nil) {
+		t.Errorf("Couldn't ReadFile at path %s", ignoreFilePath)
+	}
 	if fmt.Sprintf("%s", dat) != fmt.Sprintf("%s", expected) {
 		t.Errorf("Expected: %s got %s", expected, dat)
 	}
