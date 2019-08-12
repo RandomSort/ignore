@@ -1,5 +1,8 @@
-@test "Running without args doesn't crash" {
-  run code/ignore
-  [ "$status" -eq 0 ]
 
+@test "Running without args doesn't crash" {
+  run /builds/RandomSort/ignore/ignore
+  echo $output
+  [ "$status" -eq 0 ]
+  
 }
+
