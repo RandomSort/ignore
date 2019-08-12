@@ -1,6 +1,6 @@
 
 @test "Running without args doesn't crash" {
-  run ignore
+  run $CI_PROJECT_DIR/ignore
   echo $output
   [ "$status" -eq 0 ]
   
