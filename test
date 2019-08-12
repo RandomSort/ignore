@@ -48,6 +48,12 @@ teardown() {
   [ "${lines[1]}" = "this_is_also_path" ]
 }
 
+@test "Running outside of Gitdir reports missing git dir" {
+  cd /
+  run $BATS_TEST_DIRNAME/ignore
+  [ "$output" = "This is not a Git repository" ]
+}
+
 
 
 
